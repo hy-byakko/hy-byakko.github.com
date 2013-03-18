@@ -1,0 +1,9 @@
+---
+---
+[{% for post in site.posts %}
+{% if forloop.last == true %}
+{"id":"{{ post.id }}","title":"{{ post.title }}","uri":"{{ post.url }}","date":"{{ post.date | date_to_xmlschema }}"}
+{% else %}
+{"id":"{{ post.id }}","title":"{{ post.title }}","uri":"{{ post.url }}","date":"{{ post.date | date_to_xmlschema }}"},
+{% endif %}
+{% endfor %}]

@@ -429,3 +429,30 @@ Small Device Styles
   }
 
 }
+
+
+.page-switcher {
+  -webkit-transition: width 150ms, right 150ms, background-color 150ms;
+  background-color: transparent;
+  border: none;
+  bottom: 0;
+  font-size: 40px;
+  margin: 0;
+  max-width: 150px;
+  min-width: 90px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  z-index: 5;
+  color: rgba(0,0,0, 0.5);
+}
+
+.page-switcher:hover,
+.page-switcher:focus {
+  background-color: rgba(0,0,0, 0.06);
+}
+
+#main_content_wrap {
+  position: relative;
+}

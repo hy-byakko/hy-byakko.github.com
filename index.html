@@ -1,7 +1,52 @@
----
-layout: default
-title: hy-byakko.github.com
----
-{% for post in site.posts %}
-{{ post.content }}
-{% endfor %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="hy-byakko.github.com : blog" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/stylesheet.css">
+    <script src="/javascripts/jquery-1.9.1.js"></script>
+    <script src="/javascripts/underscore.js"></script>
+    <script src="/javascripts/backbone.js"></script>
+    <script src="/javascripts/models/post.js"></script>
+    <script src="/javascripts/collections/posts.js"></script>
+    <script src="/javascripts/router/router.js"></script>
+    <script src="/javascripts/views/app.js"></script>
+    <script src="/javascripts/app.js"></script>
+
+    <title>hy-byakko.github.com</title>
+</head>
+
+<body>
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/hy-byakko">View on GitHub</a>
+
+        <h1 id="project_title">hy-byakko.github.com</h1>
+        <h2 id="project_tagline">blog</h2>
+
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+    </footer>
+</div>
+
+<script type="text/template" id="post-switcher">
+    <button id="page-switcher-<%= id %>" class="page-switcher" style="width: 31px; <%= location %>: 0px; top: 0px; padding-bottom: 0px; display: none;"><%= content %></button>
+</script>
+
+</body>
+</html>
