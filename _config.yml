@@ -1,4 +1,4 @@
-﻿markdown: redcarpet
+markdown: redcarpet
 
 redcarpet:
   extensions: [autolink]
