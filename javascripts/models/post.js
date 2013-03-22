@@ -17,6 +17,21 @@ var app = app || {};
 			else {
 				callback.call(me, me.htmlContent);
 			}
+		},
+
+		getLink: function() {
+			return '#/posts/' + this.get('id');
+		},
+
+		getTags: function() {
+			if (!this.get('tags')) {
+				return [];
+			}
+			return this.get('tags').split(',');
+		},
+
+		getTime: function() {
+			return new Date(this.get('date'));
 		}
 	});
 

@@ -430,6 +430,9 @@ Small Device Styles
 
 }
 
+/**
+ *
+ */
 
 .page-switcher {
   -webkit-transition: width 150ms, right 150ms, background-color 150ms;
@@ -455,4 +458,44 @@ Small Device Styles
 
 #main_content_wrap {
   position: relative;
+}
+
+#index_content a:hover {
+  color: #0069ba;
+  text-shadow: #0090ff 0px 0px 2px;
+}
+
+#index_content .index_bar {
+  border-bottom: 1px dotted #212121;
+  min-height: 80px;
+  position: relative;
+}
+
+#index_content .index_bar samll{
+  position: absolute;
+  right: 10px;
+  font-size: 85%;
+  color: #999;
+}
+
+#header_wrap #post_title {
+  position: relative;
+}
+
+#header_wrap #post_title #post_close {
+  position: absolute; 
+  color: #fff;
+  top: 8px;
+  right: 0px;
+}
+
+#header_wrap #post_title #post_close .close{
+  opacity: 0.8;
+  float: left;
+  padding-right: 12px;
+  color: #fff;
+}
+
+#header_wrap #post_title #post_close small{
+  font-size: 85%;
 }

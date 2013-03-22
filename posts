@@ -2,8 +2,8 @@
 ---
 [{% for post in site.posts %}
 {% if forloop.last == true %}
-{"id":"{{ post.id }}","title":"{{ post.title }}","uri":"{{ post.url }}","date":"{{ post.date | date_to_xmlschema }}"}
+{"id":"{{ post.id }}","title":"{{ post.title }}","uri":"{{ post.url }}","date":"{{ post.date | date_to_xmlschema }}","tags":"{{ post.tags | join:',' }}"}
 {% else %}
-{"id":"{{ post.id }}","title":"{{ post.title }}","uri":"{{ post.url }}","date":"{{ post.date | date_to_xmlschema }}"},
+{"id":"{{ post.id }}","title":"{{ post.title }}","uri":"{{ post.url }}","date":"{{ post.date | date_to_xmlschema }}","tags":"{{ post.tags | join:',' }}"},
 {% endif %}
 {% endfor %}]

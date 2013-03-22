@@ -12,6 +12,9 @@ $(function () {
 		},
 
 		switcherTemplate: _.template($('#post-switcher').html()),
+		indexBarTemplate: _.template($('#index-bar').html()),
+		tagLinkTemplate: _.template($('#tag-link').html()),
+		postTitleTemplate: _.template($('#post-title').html()),
 
 		initialize: function () {
 			var me = this,
@@ -31,35 +34,107 @@ $(function () {
 
 			me.$preSwitcher = me.$('#page-switcher-pre');
 			me.$nextSwitcher = me.$('#page-switcher-next');
+			me.$title = $('#post_title');
+			me.$main = me.$('#main_content');
+			me.$index = me.$('#index_content');
+			me.$tags = $('#header_wrap #tags');
 
 			me.listenTo(app.Posts, 'pending', me.render);
 		},
 
 		render: function() {
-			var me = this,
-				currentIndex = app.CurrentPostIndex || 0,
-				post;
+			var me = this;
 
-			if (app.Posts.size() !== 0) {
-				post = app.Posts.at(currentIndex);
-				post.getHtml(function (content) {
-					me.$('#main_content').html(content);
-				});
-				me.$preSwitcher.toggle(currentIndex > 0);
-				me.$nextSwitcher.toggle(currentIndex < app.Posts.size() - 1);
-				app.CurrentPostIndex = currentIndex;
-
+			if (app.Posts.currentId) {
+				me.mainRender();
+			} else {
+				me.indexRender();
 			}
+
+			me.tagRender();
 
 			return me;
 		},
 
+		indexRender: function() {
+			var me = this,
+				bar;
+
+			me.$preSwitcher.hide();
+			me.$nextSwitcher.hide();
+			me.$title.hide();
+			me.$main.hide();
+
+			if (!me.$index.cached) {
+				app.Posts.each(function(post) {
+					bar = $($.parseHTML(me.indexBarTemplate({
+						title: post.get('title'),
+						link: post.getLink(),
+						time: post.getTime().toLocaleDateString()
+					}))[1]);
+
+					_.each(post.getTags(), function(tag) {
+						bar.append(me.tagLinkTemplate({
+							name: tag,
+							link: '#/tags/' + tag
+						}));	
+					});
+					me.$index.append(bar);
+				});
+				me.$index.cached = true;
+			}
+
+			me.$index.show();
+		},
+
+		mainRender: function() {
+			var me = this,
+				posts = app.Posts,
+				post = posts.currentPost();
+
+			me.$index.hide();
+
+			if (post) {
+				post.getHtml(function (content) {
+					me.$main.html(content);
+				});
+				me.$title.html(post.get('title'));
+				me.$preSwitcher.toggle(!!posts.offsetPost(-1));
+				me.$nextSwitcher.toggle(!!posts.offsetPost(1));
+				me.$title.html(me.postTitleTemplate({
+					title: post.get('title'),
+					time: post.getTime().toLocaleString()
+				}));
+			}
+
+			me.$title.show();
+			me.$main.show();
+		},
+
+		tagRender: function() {
+			var me = this,
+				posts = app.Posts,
+				post = posts.currentPost(),
+				tags;
+
+			me.$tags.empty();
+
+			tags = (post) ? post.getTags() : posts.getTags();
+
+			_.each(tags, function(tag) {
+				me.$tags.append(me.tagLinkTemplate({
+					name: tag,
+					link: '#/tags/' + tag
+				}));	
+			});			
+		},
+
 		preSwitch: function () {
-			app.Router.navigate('//posts/' + app.Posts.at(app.CurrentPostIndex - 1).get('id'));
+			app.Router.navigate('//posts/' + app.Posts.offsetPost(-1).get('id'));
 		},
 
 		nextSwitch: function () {
-			app.Router.navigate('//posts/' + app.Posts.at(app.CurrentPostIndex + 1).get('id'));
+			app.Router.navigate('//posts/' + app.Posts.offsetPost(1).get('id'));
 		}
 		
 	});
