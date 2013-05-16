@@ -65,24 +65,23 @@ $(function () {
 			me.$title.hide();
 			me.$main.hide();
 
-			if (!me.$index.cached) {
-				app.Posts.each(function(post) {
-					bar = $($.parseHTML(me.indexBarTemplate({
-						title: post.get('title'),
-						link: post.getLink(),
-						time: post.getTime().toLocaleDateString()
-					}))[1]);
+			me.$index.empty();
 
-					_.each(post.getTags(), function(tag) {
-						bar.append(me.tagLinkTemplate({
-							name: tag,
-							link: '#/tags/' + tag
-						}));	
-					});
-					me.$index.append(bar);
+			app.Posts.each(function(post) {
+				bar = $($.parseHTML(me.indexBarTemplate({
+					title: post.get('title'),
+					link: post.getLink(),
+					time: post.getTime().toLocaleDateString()
+				}))[1]);
+
+				_.each(post.getTags(), function(tag) {
+					bar.append(me.tagLinkTemplate({
+						name: tag,
+						link: '#/tags/' + tag
+					}));	
 				});
-				me.$index.cached = true;
-			}
+				me.$index.append(bar);
+			});
 
 			me.$index.show();
 		},
