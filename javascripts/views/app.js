@@ -40,6 +40,10 @@ $(function () {
 			me.$tags = $('#header_wrap #tags');
 
 			me.listenTo(app.Posts, 'pending', me.render);
+
+			if (app.Posts.ready) {
+				me.render();
+			}
 		},
 
 		render: function() {
