@@ -9,23 +9,44 @@ var app = app || {};
 		index: function() {
 			var me = this;
 
-			me.currentId = undefined;
-			if (me.ready) {
-				me.trigger('pending');
-			}
+			me.deactive();
+			me.trigger('render');
 		},
 
 		show: function(id) {
 			var me = this;
 
-			me.currentId = id;
-			if (me.ready) {
-				me.trigger('pending');
+			me.active(id);
+			me.trigger('render');
+		},
+
+		active: function(id) {
+			this.activeId = id;
+		},
+
+		deactive: function() {
+			this.activeId = undefined;
+		},
+
+		getContent: function() {
+			var me = this,
+				currentPost = me.currentPost();
+
+			if (currentPost) {
+				if (currentPost.htmlContent) {
+					return currentPost.htmlContent;
+				} else {
+					me.ready = false;
+					currentPost.getHtml(function() {
+						me.ready = true;
+						me.trigger('render');
+					})
+				};
 			}
 		},
 
 		currentPost: function() {
-			return this.get(this.currentId);
+			return this.get(this.activeId);
 		},
 
 		currentIndex: function () {
@@ -62,7 +83,7 @@ var app = app || {};
 	posts.fetch({
 		complete: function() {
 			posts.ready = true;
-			posts.trigger('pending');
+			posts.trigger('render');
 		}
 	});
 

@@ -8,15 +8,10 @@ var app = app || {};
 		getHtml: function(callback) {
 			var me = this;
 
-			if (me.htmlContent === undefined) {
-				$.get(me.get('uri'), function(context) {
-					me.htmlContent = context;
-					callback.call(me, me.htmlContent);
-				});
-			}
-			else {
-				callback.call(me, me.htmlContent);
-			}
+			$.get(me.get('uri'), function(context) {
+				me.htmlContent = context;
+				callback.call(me);
+			});
 		},
 
 		getLink: function() {

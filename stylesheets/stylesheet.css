@@ -483,19 +483,31 @@ Small Device Styles
 }
 
 #header_wrap #post_title #post_close {
-  position: absolute; 
+  position: absolute;
   color: #fff;
   top: 8px;
   right: 0px;
 }
 
-#header_wrap #post_title #post_close .close{
+#header_wrap #post_title #post_close .close {
   opacity: 0.8;
   float: left;
   padding-right: 12px;
   color: #fff;
 }
 
-#header_wrap #post_title #post_close small{
+#header_wrap #post_title #post_close small {
   font-size: 85%;
+}
+
+#loading {
+  margin: 0 auto;
+  width: 250px;
+}
+
+#loading img {
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  box-shadow: 0 0 0px;
 }

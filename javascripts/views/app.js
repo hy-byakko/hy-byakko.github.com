@@ -38,8 +38,9 @@ $(function () {
 			me.$main = me.$('#main_content');
 			me.$index = me.$('#index_content');
 			me.$tags = $('#header_wrap #tags');
+			me.$loading = me.$('#loading');
 
-			me.listenTo(app.Posts, 'pending', me.render);
+			me.listenTo(app.Posts, 'render', me.render);
 
 			if (app.Posts.ready) {
 				me.render();
@@ -49,7 +50,7 @@ $(function () {
 		render: function() {
 			var me = this;
 
-			if (app.Posts.currentId) {
+			if (app.Posts.activeId) {
 				me.mainRender();
 			} else {
 				me.indexRender();
@@ -71,47 +72,58 @@ $(function () {
 
 			me.$index.empty();
 
-			app.Posts.each(function(post) {
-				bar = $($.parseHTML(me.indexBarTemplate({
-					title: post.get('title'),
-					link: post.getLink(),
-					time: post.getTime().toLocaleDateString()
-				}))[1]);
+			if (app.Posts.ready) {
+				me.$loading.hide();
+				app.Posts.each(function(post) {
+					bar = $($.parseHTML(me.indexBarTemplate({
+						title: post.get('title'),
+						link: post.getLink(),
+						time: post.getTime().toLocaleDateString()
+					}))[1]);
 
-				_.each(post.getTags(), function(tag) {
-					bar.append(me.tagLinkTemplate({
-						name: tag,
-						link: '#/tags/' + tag
-					}));	
+					_.each(post.getTags(), function(tag) {
+						bar.append(me.tagLinkTemplate({
+							name: tag,
+							link: '#/tags/' + tag
+						}));
+					});
+					me.$index.append(bar);
 				});
-				me.$index.append(bar);
-			});
 
-			me.$index.show();
+				me.$index.show();
+			} else {
+				me.$loading.show();
+			};
+
 		},
 
 		mainRender: function() {
 			var me = this,
 				posts = app.Posts,
-				post = posts.currentPost();
+				post = posts.currentPost(),
+				content = posts.getContent();
 
 			me.$index.hide();
 
 			if (post) {
-				post.getHtml(function (content) {
+				if (content) {
+					me.$loading.hide();
 					me.$main.html(content);
-				});
-				me.$title.html(post.get('title'));
-				me.$preSwitcher.toggle(!!posts.offsetPost(-1));
-				me.$nextSwitcher.toggle(!!posts.offsetPost(1));
-				me.$title.html(me.postTitleTemplate({
-					title: post.get('title'),
-					time: post.getTime().toLocaleString()
-				}));
+					me.$title.html(post.get('title'));
+					me.$preSwitcher.toggle(!!posts.offsetPost(-1));
+					me.$nextSwitcher.toggle(!!posts.offsetPost(1));
+					me.$title.html(me.postTitleTemplate({
+						title: post.get('title'),
+						time: post.getTime().toLocaleString()
+					}));
+
+					me.$title.show();
+					me.$main.show();
+				} else {
+					me.$loading.show();
+				}
 			}
 
-			me.$title.show();
-			me.$main.show();
 		},
 
 		tagRender: function() {
@@ -128,8 +140,8 @@ $(function () {
 				me.$tags.append(me.tagLinkTemplate({
 					name: tag,
 					link: '#/tags/' + tag
-				}));	
-			});			
+				}));
+			});
 		},
 
 		preSwitch: function () {
@@ -139,6 +151,6 @@ $(function () {
 		nextSwitch: function () {
 			app.Router.navigate('//posts/' + app.Posts.offsetPost(1).get('id'));
 		}
-		
+
 	});
 });
