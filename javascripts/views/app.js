@@ -120,6 +120,7 @@ $(function () {
 					me.$title.show();
 					me.$main.show();
 				} else {
+					me.$main.hide();
 					me.$loading.show();
 				}
 			}
