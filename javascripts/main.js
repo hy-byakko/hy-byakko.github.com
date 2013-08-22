@@ -4,17 +4,22 @@ require.config({
   paths: {
     jquery: 'lib/jquery-2.0.3.min',
     underscore: 'lib/underscore-min',
-    backbone: 'lib/backbone.min',
+    backbone: 'lib/backbone-min',
     bootstrap: 'lib/bootstrap.min'
   },
   shim: {
-    backbone: ['jquery', 'underscore'],
+    underscore: {
+      exports: '_'
+    },
+    backbone: {
+      deps: ['underscore', 'jquery'],
+      exports: 'Backbone'
+    },
     bootstrap: ['jquery']
   }
 });
 
-require(['backbone', 'views/app', 'routers/router'], function(Backbone, AppView, Router) {
-  new Router();
+require(['backbone', 'views/app'], function(Backbone, AppView) {
   Backbone.history.start();
-  return new AppView();
+  return new AppView;
 });

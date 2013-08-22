@@ -3,6 +3,13 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
   'use strict';
   return Backbone.Model.extend({
     url: '/posts',
+    getHtml: function(callback) {
+      var _this = this;
+      return $.get(this.get('uri'), function(context) {
+        _this.htmlContent = context;
+        return callback.call(_this);
+      });
+    },
     getLink: function() {
       return '#/posts/' + this.get('id');
     },

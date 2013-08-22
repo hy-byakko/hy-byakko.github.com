@@ -7,6 +7,11 @@ define [
 
 	Backbone.Model.extend
 		url: '/posts'
+		getHtml: (callback) ->
+			$.get @get('uri'), (context) =>
+				@.htmlContent = context;
+				callback.call(@)
+
 		getLink: ->
 			'#/posts/' + @get('id')
 

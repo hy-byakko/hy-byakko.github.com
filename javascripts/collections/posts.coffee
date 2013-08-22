@@ -5,7 +5,7 @@ define [
 ], (_, Backbone, Post) ->
 	'use strict'
 
-	Backbone.Collection.extend
+	new (Backbone.Collection.extend
 		model: Post
 		url: '/posts'
 		index: ->
@@ -19,6 +19,19 @@ define [
 		active: (@activeId) ->
 
 		deactive: (@activeId = undefined) ->
+
+		getContent: ->
+			currentPost = @currentPost()
+
+			if currentPost
+				if currentPost.htmlContent
+					currentPost.htmlContent
+				else
+					@ready = false
+					currentPost.getHtml =>
+						@ready = true
+						@trigger('render')
+					false
 
 		currentPost: ->
 			@get(@activeId)
@@ -36,3 +49,10 @@ define [
 				@each (post) =>
 					@tagCollection = _.union @tagCollection, post.getTags() if post.get('tags')
 			@tagCollection
+
+		load: ->
+			@fetch
+				complete: =>
+					@ready = true
+					@trigger('render')
+	)
