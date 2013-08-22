@@ -4,121 +4,65 @@ define [
 	'backbone'
 	'collections/posts'
 	'routers/router'
-], ($, _, Backbone, posts, router) ->
+	'views/index'
+	'views/main'
+	'views/loading'
+	'text!templates/tag-link.html'
+	'text!templates/post-title.html'
+], ($, _, Backbone, posts, router, Index, Main, Loading, tagLink, postTitle) ->
 	'use strict'
 
 	Backbone.View.extend
 		el: '#main_content_wrap'
 
-		events:
-			'click #page-switcher-pre': 'preSwitch'
-			'click #page-switcher-next': 'nextSwitch'
-
-		switcherTemplate: _.template $('#post-switcher').html()
-		indexBarTemplate: _.template $('#index-bar').html()
-		tagLinkTemplate: _.template $('#tag-link').html()
-		postTitleTemplate: _.template $('#post-title').html()
+		tagLinkTemplate: _.template tagLink
+		postTitleTemplate: _.template postTitle
 
 		initialize: ->
-			$el = @$el
-
-			$el.append @switcherTemplate
-				location: 'left',
-				content: '‹',
-				id: 'pre'
-
-			$el.append @switcherTemplate
-				location: 'right',
-				content: '›',
-				id: 'next'
-
-			@$preSwitcher = @$('#page-switcher-pre')
-			@$nextSwitcher = @$('#page-switcher-next')
 			@$title = $('#post_title')
-			@$main = @$('#main_content')
-			@$index = @$('#index_content')
 			@$tags = $('#header_wrap #tags')
-			@$loading = @$('#loading')
+
+			@mainView = new Main
+			@indexView = new Index
+				tagLinkTemplate: @tagLinkTemplate
+			@loadingView = new Loading
 
 			@listenTo(posts, 'render', @render)
 			posts.load()
 
 		render: ->
-			if posts.activeId
-				@mainRender()
-			else
-				@indexRender()
+			newMode = if !posts.ready then 'loading' else if posts.activeId then 'main' else 'index'
 
-			@tagRender()
+			if newMode != @currentMode
+				@currentMode = newMode
+				@$el.empty()
+				switch @currentMode
+					when 'loading'
+						@$el.append @loadingView.render().el
+					when 'main'
+						@$title.show()
+						@$el.append @mainView.render().el
+					when 'index'
+						@$title.hide()
+						@$el.append @indexView.render().el
+
+			@headRender()
 			@
 
-		indexRender: ->
-			@$preSwitcher.hide()
-			@$nextSwitcher.hide()
-			@$title.hide()
-			@$main.hide()
-
-			@$index.empty()
-
-			if posts.ready
-				@$loading.hide()
-				posts.each (post) =>
-					bar = $ $.parseHTML(@indexBarTemplate({
-						title: post.get('title')
-						link: post.getLink()
-						time: post.getTime().toLocaleDateString()
-					}))[1]
-
-					_.each post.getTags(), (tag) =>
-						bar.append @tagLinkTemplate({
-							name: tag
-							link: '#/tags/' + tag
-						})
-					@$index.append(bar)
-
-				@$index.show()
-			else
-				@$loading.show()
-
-		mainRender: ->
-			post = posts.currentPost()
-			content = posts.getContent()
-
-			@$index.hide()
-
-			if post
-				if content
-					@$loading.hide()
-					@$main.html content
-					@$title.html post.get('title')
-					@$preSwitcher.toggle !!posts.offsetPost(-1)
-					@$nextSwitcher.toggle !!posts.offsetPost(1)
-					@$title.html @postTitleTemplate({
-						title: post.get('title')
-						time: post.getTime().toLocaleString()
-					})
-
-					@$title.show()
-					@$main.show()
-				else
-					@$main.hide()
-					@$loading.show()
-
-		tagRender: ->
-			post = posts.currentPost()
-
+		headRender: ->
 			@$tags.empty()
 
-			tags = if post then post.getTags() else posts.getTags()
+			post = posts.currentPost()
+
+			if post
+				@$title.html @postTitleTemplate
+					title: post.get('title')
+					time: post.getTime().toLocaleString()
+				tags = post.getTags()
+			else
+				tags = posts.getTags()
 
 			_.each tags, (tag) =>
-				@$tags.append @tagLinkTemplate({
+				@$tags.append @tagLinkTemplate
 					name: tag
 					link: '#/tags/' + tag
-				})
-
-		preSwitch: ->
-			router.navigate '//posts/' + posts.offsetPost(-1).get('id')
-
-		nextSwitch: ->
-			router.navigate '//posts/' + posts.offsetPost(1).get('id')
