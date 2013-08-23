@@ -19,12 +19,15 @@ define [
 		render: ->
 			@trigger('render')
 
-		active: (@activeId) ->
-			@getContent()
-
 		changeContent: (content) ->
 			@currentContent = content
 			@trigger('contentChange', content)
+
+		fetchComplete: ->
+			@trigger 'fetched'
+
+		active: (@activeId) ->
+			@getContent()
 
 		deactive: (@activeId = undefined) ->
 
@@ -61,5 +64,6 @@ define [
 			@fetch
 				complete: =>
 					@ready = true
+					@fetchComplete()
 					@render()
 	)

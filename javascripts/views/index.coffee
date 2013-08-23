@@ -15,9 +15,9 @@ define [
 		indexBarTemplate: _.template bar
 
 		initialize: ->
-			@listenTo posts, 'fetched', @render
+			@listenTo posts, 'fetched', @renderIndex
 
-		render: ->
+		renderIndex: ->
 			@$el.empty()
 			posts.each (post) =>
 				bar = $ $.parseHTML(@indexBarTemplate
@@ -32,4 +32,3 @@ define [
 						link: '#/tags/' + tag
 					})
 				@$el.append(bar)
-			@

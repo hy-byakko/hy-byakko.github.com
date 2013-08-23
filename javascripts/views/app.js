@@ -9,12 +9,14 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'routers/router
       var _this = this;
       this.$title = $('#post_title');
       this.$tags = $('#header_wrap #tags');
-      this.items = [
-        new Main, new Index({
+      this.items = {
+        main: new Main,
+        index: new Index({
           tagLinkTemplate: this.tagLinkTemplate
-        }), new Loading
-      ];
-      _.each(items, function(item) {
+        }),
+        loading: new Loading
+      };
+      _.each(this.items, function(item, mode) {
         item.$el.hide();
         return _this.$el.append(item.el);
       });
@@ -22,22 +24,22 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'routers/router
       return posts.load();
     },
     render: function() {
-      var newMode;
+      var newMode, view,
+        _this = this;
       newMode = !posts.ready ? 'loading' : posts.activeId ? 'main' : 'index';
+      view = this.items[newMode].render();
       if (newMode !== this.currentMode) {
         this.currentMode = newMode;
-        this.$el.empty();
+        _.each(this.items, function(item, mode) {
+          return item.$el.hide();
+        });
+        view.$el.show();
         switch (this.currentMode) {
-          case 'loading':
-            this.$el.append(this.loadingView.render().el);
-            break;
           case 'main':
             this.$title.show();
-            this.$el.append(this.mainView.render().el);
             break;
           case 'index':
             this.$title.hide();
-            this.$el.append(this.indexView.render().el);
         }
       }
       this.headRender();

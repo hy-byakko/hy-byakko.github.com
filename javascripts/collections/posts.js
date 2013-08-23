@@ -15,13 +15,16 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
     render: function() {
       return this.trigger('render');
     },
-    active: function(activeId) {
-      this.activeId = activeId;
-      return this.getContent();
-    },
     changeContent: function(content) {
       this.currentContent = content;
       return this.trigger('contentChange', content);
+    },
+    fetchComplete: function() {
+      return this.trigger('fetched');
+    },
+    active: function(activeId) {
+      this.activeId = activeId;
+      return this.getContent();
     },
     deactive: function(activeId) {
       this.activeId = activeId != null ? activeId : void 0;
@@ -71,6 +74,7 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
       return this.fetch({
         complete: function() {
           _this.ready = true;
+          _this.fetchComplete();
           return _this.render();
         }
       });

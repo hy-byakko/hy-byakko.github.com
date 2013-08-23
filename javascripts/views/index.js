@@ -7,12 +7,12 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'text!templates
     className: 'inner',
     indexBarTemplate: _.template(bar),
     initialize: function() {
-      return this.listenTo(posts, 'fetched', this.render);
+      return this.listenTo(posts, 'fetched', this.renderIndex);
     },
-    render: function() {
+    renderIndex: function() {
       var _this = this;
       this.$el.empty();
-      posts.each(function(post) {
+      return posts.each(function(post) {
         bar = $($.parseHTML(_this.indexBarTemplate({
           title: post.get('title'),
           link: post.getLink(),
@@ -26,7 +26,6 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'text!templates
         });
         return _this.$el.append(bar);
       });
-      return this;
     }
   });
 });

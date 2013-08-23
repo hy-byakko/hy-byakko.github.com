@@ -22,14 +22,13 @@ define [
 			@$title = $('#post_title')
 			@$tags = $('#header_wrap #tags')
 
-			@items = [
-				new Main
-				new Index
+			@items =
+				main: new Main
+				index: new Index
 					tagLinkTemplate: @tagLinkTemplate
-				new Loading
-			]
+				loading: new Loading
 
-			_.each items, (item) =>
+			_.each @items, (item, mode) =>
 				item.$el.hide()
 				@$el.append item.el
 
@@ -38,19 +37,18 @@ define [
 
 		render: ->
 			newMode = if !posts.ready then 'loading' else if posts.activeId then 'main' else 'index'
+			view = @items[newMode].render()
 
 			if newMode != @currentMode
 				@currentMode = newMode
-				@$el.empty()
+				_.each @items, (item, mode) =>
+					item.$el.hide()
+				view.$el.show()
 				switch @currentMode
-					when 'loading'
-						@$el.append @loadingView.render().el
 					when 'main'
 						@$title.show()
-						@$el.append @mainView.render().el
 					when 'index'
 						@$title.hide()
-						@$el.append @indexView.render().el
 
 			@headRender()
 			@
