@@ -6,13 +6,18 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'routers/router
     tagLinkTemplate: _.template(tagLink),
     postTitleTemplate: _.template(postTitle),
     initialize: function() {
+      var _this = this;
       this.$title = $('#post_title');
       this.$tags = $('#header_wrap #tags');
-      this.mainView = new Main;
-      this.indexView = new Index({
-        tagLinkTemplate: this.tagLinkTemplate
+      this.items = [
+        new Main, new Index({
+          tagLinkTemplate: this.tagLinkTemplate
+        }), new Loading
+      ];
+      _.each(items, function(item) {
+        item.$el.hide();
+        return _this.$el.append(item.el);
       });
-      this.loadingView = new Loading;
       this.listenTo(posts, 'render', this.render);
       return posts.load();
     },

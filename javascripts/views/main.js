@@ -2,8 +2,6 @@
 define(['jquery', 'underscore', 'backbone', 'collections/posts', 'routers/router', 'text!templates/main/switcher.html'], function($, _, Backbone, posts, router, switcher) {
   'use strict';
   return Backbone.View.extend({
-    tagName: 'section',
-    className: 'inner',
     events: {
       'click #page-switcher-pre': 'preSwitch',
       'click #page-switcher-next': 'nextSwitch'
@@ -20,14 +18,19 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'routers/router
         content: '›',
         id: 'next'
       }));
+      this.$el.append('<section class="inner" id="main_content" />');
       this.$preSwitcher = this.$('#page-switcher-pre');
-      return this.$nextSwitcher = this.$('#page-switcher-next');
+      this.$nextSwitcher = this.$('#page-switcher-next');
+      this.$content = this.$('#main_content');
+      return posts.on('contentChange', this.contentRender, this);
     },
     render: function() {
-      this.$el.html(content);
       this.$preSwitcher.toggle(!!posts.offsetPost(-1));
       this.$nextSwitcher.toggle(!!posts.offsetPost(1));
       return this;
+    },
+    contentRender: function(content) {
+      return this.$content.html(content);
     },
     preSwitch: function() {
       return router.navigate('//posts/' + posts.offsetPost(-1).get('id'));

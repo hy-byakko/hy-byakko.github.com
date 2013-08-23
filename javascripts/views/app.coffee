@@ -22,10 +22,16 @@ define [
 			@$title = $('#post_title')
 			@$tags = $('#header_wrap #tags')
 
-			@mainView = new Main
-			@indexView = new Index
-				tagLinkTemplate: @tagLinkTemplate
-			@loadingView = new Loading
+			@items = [
+				new Main
+				new Index
+					tagLinkTemplate: @tagLinkTemplate
+				new Loading
+			]
+
+			_.each items, (item) =>
+				item.$el.hide()
+				@$el.append item.el
 
 			@listenTo(posts, 'render', @render)
 			posts.load()

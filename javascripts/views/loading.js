@@ -3,6 +3,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
   'use strict';
   return Backbone.View.extend({
     tagName: 'div',
+    id: 'loading',
     initialize: function() {
       return this.$el.append('<img src="images/loading.gif">');
     }

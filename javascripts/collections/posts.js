@@ -6,14 +6,22 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
     url: '/posts',
     index: function() {
       this.deactive();
-      return this.trigger('render');
+      return this.render();
     },
     show: function(id) {
       this.active(id);
+      return this.render();
+    },
+    render: function() {
       return this.trigger('render');
     },
     active: function(activeId) {
       this.activeId = activeId;
+      return this.getContent();
+    },
+    changeContent: function(content) {
+      this.currentContent = content;
+      return this.trigger('contentChange', content);
     },
     deactive: function(activeId) {
       this.activeId = activeId != null ? activeId : void 0;
@@ -22,17 +30,15 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
       var currentPost,
         _this = this;
       currentPost = this.currentPost();
-      if (currentPost) {
-        if (currentPost.htmlContent) {
-          return currentPost.htmlContent;
-        } else {
-          this.ready = false;
-          currentPost.getHtml(function() {
-            _this.ready = true;
-            return _this.trigger('render');
-          });
-          return false;
-        }
+      if (currentPost.htmlContent) {
+        return this.changeContent(currentPost.htmlContent);
+      } else {
+        this.ready = false;
+        return currentPost.getHtml(function() {
+          _this.ready = true;
+          _this.changeContent(currentPost.htmlContent);
+          return _this.render();
+        });
       }
     },
     currentPost: function() {
@@ -65,7 +71,7 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
       return this.fetch({
         complete: function() {
           _this.ready = true;
-          return _this.trigger('render');
+          return _this.render();
         }
       });
     }

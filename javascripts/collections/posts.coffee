@@ -10,31 +10,38 @@ define [
 		url: '/posts'
 		index: ->
 			@deactive()
-			@trigger('render')
+			@render()
 
 		show: (id) ->
 			@active(id)
+			@render()
+
+		render: ->
 			@trigger('render')
 
 		active: (@activeId) ->
+			@getContent()
+
+		changeContent: (content) ->
+			@currentContent = content
+			@trigger('contentChange', content)
 
 		deactive: (@activeId = undefined) ->
 
 		getContent: ->
 			currentPost = @currentPost()
 
-			if currentPost
-				if currentPost.htmlContent
-					currentPost.htmlContent
-				else
-					@ready = false
-					currentPost.getHtml =>
-						@ready = true
-						@trigger('render')
-					false
+			if currentPost.htmlContent
+				@changeContent currentPost.htmlContent
+			else
+				@ready = false
+				currentPost.getHtml =>
+					@ready = true
+					@changeContent currentPost.htmlContent
+					@render()
 
 		currentPost: ->
-			@get(@activeId)
+			@get @activeId
 
 		currentIndex: ->
 			@indexOf @currentPost()
@@ -54,5 +61,5 @@ define [
 			@fetch
 				complete: =>
 					@ready = true
-					@trigger('render')
+					@render()
 	)

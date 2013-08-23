@@ -9,9 +9,6 @@ define [
 	'use strict'
 
 	Backbone.View.extend
-		tagName: 'section'
-		className: 'inner'
-
 		events:
 			'click #page-switcher-pre': 'preSwitch'
 			'click #page-switcher-next': 'nextSwitch'
@@ -29,14 +26,21 @@ define [
 				content: '›',
 				id: 'next'
 
+			@$el.append '<section class="inner" id="main_content" />'
+
 			@$preSwitcher = @$('#page-switcher-pre')
 			@$nextSwitcher = @$('#page-switcher-next')
+			@$content = @$('#main_content')
+
+			posts.on 'contentChange', @contentRender, @
 
 		render: ->
-			@$el.html content
 			@$preSwitcher.toggle !!posts.offsetPost(-1)
 			@$nextSwitcher.toggle !!posts.offsetPost(1)
 			@
+
+		contentRender: (content) ->
+			@$content.html content
 
 		preSwitch: ->
 			router.navigate '//posts/' + posts.offsetPost(-1).get('id')
