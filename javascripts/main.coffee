@@ -1,5 +1,6 @@
 'use strict'
 require.config
+	baseUrl: '.'
 	paths:
 		jquery: 'lib/jquery-2.0.3.min'
 		underscore: 'lib/underscore-min'
@@ -21,5 +22,5 @@ require [
 	'backbone'
 	'views/app'
 ], (Backbone, AppView) ->
-	Backbone.history.start()
 	new AppView
+	Backbone.history.start()

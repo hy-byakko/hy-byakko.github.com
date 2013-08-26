@@ -15,7 +15,8 @@ define [
 		indexBarTemplate: _.template bar
 
 		initialize: ->
-			@listenTo posts, 'fetched', @renderIndex
+			# Fetch success will trigger reset
+			posts.on 'reset', @renderIndex, @
 
 		renderIndex: ->
 			@$el.empty()

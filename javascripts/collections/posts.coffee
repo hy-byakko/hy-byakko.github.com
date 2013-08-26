@@ -23,9 +23,6 @@ define [
 			@currentContent = content
 			@trigger('contentChange', content)
 
-		fetchComplete: ->
-			@trigger 'fetched'
-
 		active: (@activeId) ->
 			@getContent()
 
@@ -33,6 +30,9 @@ define [
 
 		getContent: ->
 			currentPost = @currentPost()
+
+			# Ensure posts has fetched
+			return @listenToOnce @, 'reset', @getContent unless currentPost
 
 			if currentPost.htmlContent
 				@changeContent currentPost.htmlContent
@@ -62,8 +62,9 @@ define [
 
 		load: ->
 			@fetch
+				reset: true
 				complete: =>
 					@ready = true
-					@fetchComplete()
+					# Change mode
 					@render()
 	)

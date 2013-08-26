@@ -2,6 +2,7 @@ define [
 	'backbone'
 	'collections/posts'
 ], (Backbone, posts) ->
+
 	new (Backbone.Router.extend
 		routes:
 			'posts/*id': 'postShow'

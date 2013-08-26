@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'collections/posts', 'text!templates
     className: 'inner',
     indexBarTemplate: _.template(bar),
     initialize: function() {
-      return this.listenTo(posts, 'fetched', this.renderIndex);
+      return posts.on('reset', this.renderIndex, this);
     },
     renderIndex: function() {
       var _this = this;

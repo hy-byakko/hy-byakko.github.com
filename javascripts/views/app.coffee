@@ -3,13 +3,12 @@ define [
 	'underscore'
 	'backbone'
 	'collections/posts'
-	'routers/router'
 	'views/index'
 	'views/main'
 	'views/loading'
 	'text!templates/tag-link.html'
 	'text!templates/post-title.html'
-], ($, _, Backbone, posts, router, Index, Main, Loading, tagLink, postTitle) ->
+], ($, _, Backbone, posts, Index, Main, Loading, tagLink, postTitle) ->
 	'use strict'
 
 	Backbone.View.extend

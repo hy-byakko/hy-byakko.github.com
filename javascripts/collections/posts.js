@@ -19,9 +19,6 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
       this.currentContent = content;
       return this.trigger('contentChange', content);
     },
-    fetchComplete: function() {
-      return this.trigger('fetched');
-    },
     active: function(activeId) {
       this.activeId = activeId;
       return this.getContent();
@@ -33,6 +30,9 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
       var currentPost,
         _this = this;
       currentPost = this.currentPost();
+      if (!currentPost) {
+        return this.listenToOnce(this, 'reset', this.getContent);
+      }
       if (currentPost.htmlContent) {
         return this.changeContent(currentPost.htmlContent);
       } else {
@@ -72,9 +72,9 @@ define(['underscore', 'backbone', 'models/post'], function(_, Backbone, Post) {
     load: function() {
       var _this = this;
       return this.fetch({
+        reset: true,
         complete: function() {
           _this.ready = true;
-          _this.fetchComplete();
           return _this.render();
         }
       });
